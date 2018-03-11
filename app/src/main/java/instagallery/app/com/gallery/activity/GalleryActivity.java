@@ -19,6 +19,9 @@ import android.webkit.CookieSyncManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.NetworkPolicy;
+import com.squareup.picasso.Picasso;
+
 import java.util.ArrayList;
 
 import butterknife.BindView;
@@ -43,6 +46,8 @@ public class GalleryActivity extends AppCompatActivity implements InstaView, Swi
 
     public static String mUsername="";
     public static String mUserPicture="";
+    private String DATA_LIST_KEY = "DATA_LIST_KEY";
+    private String TOKEN_KEY = "TOKEN";
 
     private CustomStaggeredGridLayoutManager mLayoutManager;
     private StaggeredGridLayoutAdapter adapter;
@@ -72,6 +77,22 @@ public class GalleryActivity extends AppCompatActivity implements InstaView, Swi
                 instagramPresenter.Instagram_request(GalleryActivity.this,access_token,"instagram");
             }
         } else {
+            if (data != null) {
+                data = savedInstanceState.getParcelableArrayList(DATA_LIST_KEY);
+                access_token= savedInstanceState.getString(TOKEN_KEY);
+
+                if (mUsername.length()> 0) {
+                    username.setText(data.get(0).getUser().getFull_name());
+                    Picasso.with(GalleryActivity.this)
+                            .load(data.get(0).getImages().getStandard_resolution().getUrl())
+                            .networkPolicy(NetworkPolicy.OFFLINE)
+                            .resize(200, 200)
+                            .centerCrop()
+                            .into(userpicture);
+                }
+
+                InitRecyclerView();
+            }
         }
 
         swipeRefreshLayout.setOnRefreshListener(this);
@@ -169,6 +190,17 @@ public class GalleryActivity extends AppCompatActivity implements InstaView, Swi
         adapter.notifyDataSetChanged();
         swipeRefreshLayout.setRefreshing(false);
 
+        if (mUsername.length() >= 0) {
+            username.setText(mUsername);
+
+            Picasso.with(GalleryActivity.this)
+                    .load(mUserPicture)
+                    .networkPolicy(NetworkPolicy.OFFLINE)
+                    .resize(270, 270)
+                    .centerCrop()
+                    .into(userpicture);
+        }
+
     }
 
     @Override
@@ -182,5 +214,13 @@ public class GalleryActivity extends AppCompatActivity implements InstaView, Swi
         InitRecyclerView();
         data.clear();
         instagramPresenter.Instagram_request(GalleryActivity.this,access_token,"instagram");
+    }
+
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putString(TOKEN_KEY, access_token);
+        outState.putParcelableArrayList(DATA_LIST_KEY, new ArrayList<Data>(adapter.getList()));
+        super.onSaveInstanceState(outState);
     }
 }
