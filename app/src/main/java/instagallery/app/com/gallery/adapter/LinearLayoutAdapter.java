@@ -14,7 +14,6 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.jakewharton.rxbinding.view.RxView;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
@@ -25,15 +24,21 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import instagallery.app.com.gallery.Model.Data;
 import instagallery.app.com.gallery.R;
-import rx.functions.Func1;
+import rx.Observable;
+import rx.subjects.PublishSubject;
 
-public class StaggeredGridLayoutAdapter extends CustomRecyclerViewAdapter {
+public class LinearLayoutAdapter extends CustomRecyclerViewAdapter {
     private Activity activity;
     private int screenWidth;
     private int screenHeight;
 
+    public PublishSubject<Object[]> mViewClickSubject = PublishSubject.create();
 
-    public StaggeredGridLayoutAdapter(Activity activity, ArrayList<Data> images) {
+    public Observable<Object[]> getViewClickedObservable() {
+        return mViewClickSubject.asObservable();
+    }
+
+    public LinearLayoutAdapter(Activity activity, ArrayList<Data> images) {
         this.activity = activity;
         this.images = images;
         WindowManager wm = (WindowManager) activity.getSystemService(Context.WINDOW_SERVICE);
@@ -63,35 +68,16 @@ public class StaggeredGridLayoutAdapter extends CustomRecyclerViewAdapter {
 
 
         final Data myHolder = (Data) getItem(position);
-        myHolder.setPosition(position);
-        final Object[] ItemObject=new Object[]{myHolder,((Holder) holder).images};
-
-        RxView.clicks(holder.itemView) //Item click binding, observer in GalleryActivity
-                .map(new Func1<Void, Object[]>() {
-                    @Override
-                    public Object[] call(Void holder)
-                    {
-                        return ItemObject;
-                    }
-                })
-                .subscribe(mViewClickSubject);
-
 
         BitmapFactory.Options opts = new BitmapFactory.Options();
         opts.inJustDecodeBounds = true;
         BitmapFactory.decodeFile(myHolder.getUser().getProfile_picture(), opts);
         opts.inJustDecodeBounds = false;
-        final int height;
-        if (position == 1 || position == (images.size() - 1)) {
-            height = screenHeight/3;
-        } else {
-            height = screenHeight/2;
-        }
 
         Picasso.with(activity)
                 .load(myHolder.getImages().getStandard_resolution().getUrl())
                 .networkPolicy(NetworkPolicy.OFFLINE)
-                .resize(screenWidth / 2, height)
+                .resize(screenWidth, screenHeight)
                 .centerCrop()
                .into(((Holder) holder).images, new Callback() {
             @Override
@@ -104,22 +90,19 @@ public class StaggeredGridLayoutAdapter extends CustomRecyclerViewAdapter {
                 // Try again online if cache failed
                 Picasso.with(activity)
                         .load(Uri.parse(myHolder.getImages().getStandard_resolution().getUrl()))
-                        .error(R.drawable.ic_close)
+                        .error(R.drawable.ic_share)
                         .placeholder(R.drawable.ic_photo_camera)
-                        .resize(screenWidth / 2, height)
+                        .resize(screenWidth , screenHeight)
                         .centerCrop()
                         .into(((Holder) holder).images);
             }
         });
 
-        if (myHolder.getLikes().getCount()!=null) {
-            ((Holder) holder).likes.setText(myHolder.getLikes().getCount());
-        }
-        if (myHolder.getComments()!=null) {
-            ((Holder) holder).comments.setText(myHolder.getComments().getCount());
-        }
+        ((Holder) holder).likes.setText(myHolder.getLikes().getCount());
+        ((Holder) holder).comments.setText(myHolder.getComments().getCount());
 
     }
+
 
     @Override
     public int getItemCount() {
@@ -127,25 +110,22 @@ public class StaggeredGridLayoutAdapter extends CustomRecyclerViewAdapter {
     }
 
 
-    public class Holder extends CustomRecycleViewHolder{
-
-        @BindView(R.id.ivItemGridImage) ImageView images;
-        @BindView(R.id.comments) TextView comments;
+    public class Holder extends CustomRecycleViewHolder {
         @BindView(R.id.likes) TextView likes;
+        @BindView(R.id.comments) TextView comments;
+        @BindView(R.id.ivItemGridImage) ImageView images;
 
         public Holder(final View itemView) {
             super(itemView);
             ButterKnife.bind(this,itemView);
+
         }
+
     }
 
     public ArrayList<Data> getList(){
         return images;
     }
 
-    public void clearData(){
-         images.clear();
-        this.notifyDataSetChanged();
-    }
 
 }

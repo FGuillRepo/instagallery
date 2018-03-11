@@ -213,6 +213,7 @@ public class GalleryActivity extends AppCompatActivity implements InstaView, Swi
     public void onRefresh() {
         InitRecyclerView();
         data.clear();
+        adapter.clearData();
         instagramPresenter.Instagram_request(GalleryActivity.this,access_token,"instagram");
     }
 
