@@ -3,9 +3,11 @@ package instagallery.app.com.gallery;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
+import instagallery.app.com.gallery.activity.AuthentificationActivity;
 
 
 /**
@@ -19,7 +21,10 @@ public class LauncherApplication extends Activity {
         this.setContentView(R.layout.activity_launcher);
 
         if (savedInstanceState == null) {
-
+                 //   if (Status(getApplicationContext()).equals("Auth")) {
+                        Intent intent = new Intent(getBaseContext(), AuthentificationActivity.class);
+                        startActivity(intent);
+                        finish();
             }
     }
 

@@ -1,4 +1,14 @@
 <resources>
     <string name="app_name">Instagram Feeds Guillaouic Test</string>
 
-  </resources>
+    <!-- Authentication -->
+    <string name="auth_error">An error occured, please retry or contact the developer to check if you are a sandbox user</string>
+
+
+    <!-- Dialog network-->
+    <string name="dialog_OK">OK</string>
+    <string name="dialog_BtnCancel">CANCEL</string>
+    <string name="dialog_network_message">No network connectivity,\n connect to a network and retry.</string>
+    <string name="dialog_network_title">Connectivity</string>
+
+</resources>
