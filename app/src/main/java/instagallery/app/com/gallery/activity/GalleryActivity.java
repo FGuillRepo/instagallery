@@ -33,19 +33,26 @@ import instagallery.app.com.gallery.Network.InstagramRequestPresenter;
 import instagallery.app.com.gallery.R;
 import instagallery.app.com.gallery.adapter.CustomStaggeredGridLayoutManager;
 import instagallery.app.com.gallery.adapter.StaggeredGridLayoutAdapter;
+import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
 import rx.functions.Action1;
 
 
 public class GalleryActivity extends AppCompatActivity implements InstaView, SwipeRefreshLayout.OnRefreshListener {
 
-    @BindView(R.id.toolbar) Toolbar toolbar;
-    @BindView(R.id.lv_feed) RecyclerView recyclerView;
-    @BindView(R.id.username) TextView username;
-    @BindView(R.id.user_picture) CircleImageView userpicture;
-    @BindView(R.id.swipeRefresh) SwipeRefreshLayout swipeRefreshLayout;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+    @BindView(R.id.lv_feed)
+    RecyclerView recyclerView;
+    @BindView(R.id.username)
+    TextView username;
+    @BindView(R.id.user_picture)
+    CircleImageView userpicture;
+    @BindView(R.id.swipeRefresh)
+    SwipeRefreshLayout swipeRefreshLayout;
 
-    public static String mUsername="";
-    public static String mUserPicture="";
+    public static String mUsername = "";
+    public static String mUserPicture = "";
     private String DATA_LIST_KEY = "DATA_LIST_KEY";
     private String TOKEN_KEY = "TOKEN";
 
@@ -63,33 +70,85 @@ public class GalleryActivity extends AppCompatActivity implements InstaView, Swi
         ButterKnife.bind(this);
         setToolbar();
 
-        // presenter initalize
-        instagramPresenter=new InstagramRequestPresenter(this);
 
         // presenter initalize
+        instagramPresenter = new InstagramRequestPresenter(this);
+        instagramPresenter.getInstaInteractor().getUsernameChange().subscribe(new Observer<String>() {
+            @Override
+            public void onSubscribe(Disposable d) {
+
+            }
+
+            @Override
+            public void onNext(String user_name) {
+                username.setText(user_name);
+                Log.d("userdd", "toto");
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+        });
+        instagramPresenter.getInstaInteractor().getUserPictureChange().subscribe(new Observer<String>() {
+            @Override
+            public void onSubscribe(Disposable d) {
+
+            }
+
+            @Override
+            public void onNext(String picture) {
+                Picasso.with(GalleryActivity.this)
+                        .load(picture)
+                        .networkPolicy(NetworkPolicy.OFFLINE)
+                        .resize(270, 270)
+                        .centerCrop()
+                        .into(userpicture);
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+        });
+
+
         if (savedInstanceState == null) {
-            if (getIntent()!=null) {
+            if (getIntent() != null) {
                 Intent i = this.getIntent();
                 access_token = i.getStringExtra("access_token");
                 InitRecyclerView();
                 data.clear();
                 // presenter to request instagram user data
-                instagramPresenter.Instagram_request(GalleryActivity.this,access_token,"instagram");
+                instagramPresenter.Instagram_request(GalleryActivity.this, access_token, "instagram");
             }
         } else {
             if (data != null) {
                 data = savedInstanceState.getParcelableArrayList(DATA_LIST_KEY);
-                access_token= savedInstanceState.getString(TOKEN_KEY);
+                access_token = savedInstanceState.getString(TOKEN_KEY);
 
-                if (mUsername.length()> 0) {
-                    username.setText(data.get(0).getUser().getFull_name());
-                    Picasso.with(GalleryActivity.this)
-                            .load(data.get(0).getImages().getStandard_resolution().getUrl())
-                            .networkPolicy(NetworkPolicy.OFFLINE)
-                            .resize(200, 200)
-                            .centerCrop()
-                            .into(userpicture);
-                }
+                    mUsername = data.get(0).getUser().getFull_name();
+                    mUserPicture = data.get(0).getImages().getStandard_resolution().getUrl();
+
+                username.setText(mUsername);
+                Picasso.with(GalleryActivity.this)
+                        .load(mUserPicture)
+                        .networkPolicy(NetworkPolicy.OFFLINE)
+                        .resize(200, 200)
+                        .centerCrop()
+                        .into(userpicture);
 
                 InitRecyclerView();
             }
@@ -108,7 +167,7 @@ public class GalleryActivity extends AppCompatActivity implements InstaView, Swi
 
 
     private void InitRecyclerView() {
-        if (mLayoutManager==null) {
+        if (mLayoutManager == null) {
             mLayoutManager = new CustomStaggeredGridLayoutManager(2, GridLayoutManager.VERTICAL);
             recyclerView.setLayoutManager(mLayoutManager);
             adapter = new StaggeredGridLayoutAdapter(this, data);
@@ -119,7 +178,7 @@ public class GalleryActivity extends AppCompatActivity implements InstaView, Swi
     public void showDetailedPicture(Object[] data) {
         String transitionName = this.getString(R.string.transition_string);
 
-        Data dataItem =  (Data) data[0]; //image from recycler touched
+        Data dataItem = (Data) data[0]; //image from recycler touched
         ImageView viewStart = (ImageView) data[1]; //image from recycler touched
         ActivityOptionsCompat options =
 
@@ -128,12 +187,52 @@ public class GalleryActivity extends AppCompatActivity implements InstaView, Swi
                         transitionName
                 );
 
-        Intent intent=new Intent(this,GalleryDetailActivity.class);
-        intent.putExtra("position",dataItem);
+        Intent intent = new Intent(this, GalleryDetailActivity.class);
+        intent.putExtra("position", dataItem);
         ActivityCompat.startActivity(this, intent, options.toBundle());
         overridePendingTransition(R.anim.enter_from_left, R.anim.exit_to_right);
     }
 
+
+    @Override
+    public void ShowRequestProgress() {
+        swipeRefreshLayout.setRefreshing(true);
+
+    }
+
+    @Override
+    public void onError() {
+        swipeRefreshLayout.setRefreshing(false);
+
+    }
+
+    @Override
+    public void RequestSuccess() {
+        adapter.notifyDataSetChanged();
+        swipeRefreshLayout.setRefreshing(false);
+    }
+
+    @Override
+    public void noNetworkConnectivity() {
+        Log.d("Instagram response", "show View no network");
+
+    }
+
+    @Override
+    public void onRefresh() {
+        InitRecyclerView();
+        data.clear();
+        adapter.clearData();
+        instagramPresenter.Instagram_request(GalleryActivity.this, access_token, "instagram");
+    }
+
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putString(TOKEN_KEY, access_token);
+        outState.putParcelableArrayList(DATA_LIST_KEY, new ArrayList<Data>(adapter.getList()));
+        super.onSaveInstanceState(outState);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -158,7 +257,8 @@ public class GalleryActivity extends AppCompatActivity implements InstaView, Swi
         return super.onOptionsItemSelected(item);
     }
 
-    public void setToolbar(){
+
+    public void setToolbar() {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -172,56 +272,4 @@ public class GalleryActivity extends AppCompatActivity implements InstaView, Swi
         });
     }
 
-    @Override
-    public void ShowRequestProgress() {
-        swipeRefreshLayout.setRefreshing(true);
-
-
-    }
-
-    @Override
-    public void onError() {
-        swipeRefreshLayout.setRefreshing(false);
-
-    }
-
-    @Override
-    public void RequestSuccess() {
-        adapter.notifyDataSetChanged();
-        swipeRefreshLayout.setRefreshing(false);
-
-        if (mUsername.length() >= 0) {
-            username.setText(mUsername);
-
-            Picasso.with(GalleryActivity.this)
-                    .load(mUserPicture)
-                    .networkPolicy(NetworkPolicy.OFFLINE)
-                    .resize(270, 270)
-                    .centerCrop()
-                    .into(userpicture);
-        }
-
-    }
-
-    @Override
-    public void noNetworkConnectivity() {
-        Log.d("Instagram response", "show View no network");
-
-    }
-
-    @Override
-    public void onRefresh() {
-        InitRecyclerView();
-        data.clear();
-        adapter.clearData();
-        instagramPresenter.Instagram_request(GalleryActivity.this,access_token,"instagram");
-    }
-
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        outState.putString(TOKEN_KEY, access_token);
-        outState.putParcelableArrayList(DATA_LIST_KEY, new ArrayList<Data>(adapter.getList()));
-        super.onSaveInstanceState(outState);
-    }
 }

@@ -15,9 +15,14 @@ public class InstagramRequestPresenter implements InstaPresenter, InstaInteracto
     private InstaView instaView;
     private InstaInteractor instaInteractor;
 
+
     public InstagramRequestPresenter(InstaView loginView) {
         this.instaView = loginView;
         this.instaInteractor = new InstaInteractorImpl();
+    }
+
+    public InstaInteractor getInstaInteractor() {
+        return instaInteractor;
     }
 
     // calling method to request Instagram data
@@ -50,6 +55,7 @@ public class InstagramRequestPresenter implements InstaPresenter, InstaInteracto
     }
 
     @Override public void onSuccess() {
+
         if (instaView != null) {
             instaView.RequestSuccess();
         }
