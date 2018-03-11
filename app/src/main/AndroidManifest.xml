@@ -27,6 +27,8 @@
         <activity android:name=".activity.AuthentificationActivity">
         </activity>
 
+        <activity android:name=".activity.GalleryActivity">
+        </activity>
 
     </application>
 
