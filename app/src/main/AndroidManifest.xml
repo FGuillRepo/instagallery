@@ -30,6 +30,10 @@
         <activity android:name=".activity.GalleryActivity">
         </activity>
 
+        <activity android:name=".activity.GalleryDetailActivity">
+
+        </activity>
+
     </application>
 
 </manifest>

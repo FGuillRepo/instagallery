@@ -3,6 +3,8 @@ package instagallery.app.com.gallery.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -14,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -77,7 +80,7 @@ public class GalleryActivity extends AppCompatActivity implements InstaView, Swi
         adapter.getViewClickedObservable().subscribe(new Action1<Object[]>() {
             @Override
             public void call(Object[] view) {
-
+                showDetailedPicture(view);
             }
         });
     }
@@ -90,6 +93,24 @@ public class GalleryActivity extends AppCompatActivity implements InstaView, Swi
             adapter = new StaggeredGridLayoutAdapter(this, data);
             recyclerView.setAdapter(adapter);
         }
+    }
+
+    public void showDetailedPicture(Object[] data) {
+        String transitionName = this.getString(R.string.transition_string);
+
+        Data dataItem =  (Data) data[0]; //image from recycler touched
+        ImageView viewStart = (ImageView) data[1]; //image from recycler touched
+        ActivityOptionsCompat options =
+
+                ActivityOptionsCompat.makeSceneTransitionAnimation(this,
+                        viewStart,
+                        transitionName
+                );
+
+        Intent intent=new Intent(this,GalleryDetailActivity.class);
+        intent.putExtra("position",dataItem);
+        ActivityCompat.startActivity(this, intent, options.toBundle());
+        overridePendingTransition(R.anim.enter_from_left, R.anim.exit_to_right);
     }
 
 
