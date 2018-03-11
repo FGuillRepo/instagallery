@@ -21,15 +21,12 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 import instagallery.app.com.gallery.Model.Data;
-import instagallery.app.com.gallery.Model.InstagramResponse;
+import instagallery.app.com.gallery.Network.InstaView;
+import instagallery.app.com.gallery.Network.InstagramRequestPresenter;
 import instagallery.app.com.gallery.R;
-import instagallery.app.com.gallery.RetroFit.RestClient;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 
-public class GalleryActivity extends AppCompatActivity  {
+public class GalleryActivity extends AppCompatActivity implements InstaView {
 
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.lv_feed) RecyclerView recyclerView;
@@ -37,6 +34,9 @@ public class GalleryActivity extends AppCompatActivity  {
     @BindView(R.id.user_picture) CircleImageView userpicture;
     @BindView(R.id.swipeRefresh) SwipeRefreshLayout swipeRefreshLayout;
 
+    public static String mUsername="";
+    public static String mUserPicture="";
+    private InstagramRequestPresenter instagramPresenter;
     public static ArrayList<Data> data = new ArrayList<>();
     private String access_token = "";
 
@@ -49,37 +49,20 @@ public class GalleryActivity extends AppCompatActivity  {
         setToolbar();
 
         // presenter initalize
+        instagramPresenter=new InstagramRequestPresenter(this);
+
+        // presenter initalize
         if (savedInstanceState == null) {
             if (getIntent()!=null) {
                 Intent i = this.getIntent();
                 access_token = i.getStringExtra("access_token");
-                CallInstagram();
+                data.clear();
+                // presenter to request instagram user data
+                instagramPresenter.Instagram_request(GalleryActivity.this,access_token,"instagram");
             }
         } else {
         }
 
-    }
-
-    private void CallInstagram(){
-        if (access_token!=null) {
-            Call<InstagramResponse> call = RestClient.getRetroFitService().getTagPhotos(access_token);
-            call.enqueue(new Callback<InstagramResponse>() {
-                @Override
-                public void onResponse(Call<InstagramResponse> call, Response<InstagramResponse> response) {
-                    if (response.body() != null) {
-                        for (int i = 0; i < response.body().getData().length; i++) {
-                            data.add(response.body().getData()[i]);
-                            Log.d("Instagram response",response.body().getData()[i].getUser().getFull_name());
-                        }
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<InstagramResponse> call, Throwable t) {
-                    //Handle failure
-                }
-            });
-        }
     }
 
 
@@ -120,4 +103,25 @@ public class GalleryActivity extends AppCompatActivity  {
         });
     }
 
+    @Override
+    public void showNetworkProgress() {
+        Log.d("Instagram response", "show view progress");
+
+    }
+
+    @Override
+    public void onError() {
+        Log.d("Instagram response", "show View error");
+    }
+
+    @Override
+    public void NetworkSuccess() {
+        Log.d("Instagram response", "show View gallery");
+    }
+
+    @Override
+    public void noNetworkConnectivity() {
+        Log.d("Instagram response", "show View no network");
+
+    }
 }
