@@ -27,7 +27,7 @@ public class InstagramRequestPresenter implements InstaPresenter, InstaInteracto
 
         if (Utils.isConnected(context)) {
             if (type.equals("instagram")) {
-                instaView.showNetworkProgress();
+                instaView.ShowRequestProgress();
 
                 // request Instagram data
                 instaInteractor.getInstagram_Data(context, this, accessToken);
@@ -51,7 +51,7 @@ public class InstagramRequestPresenter implements InstaPresenter, InstaInteracto
 
     @Override public void onSuccess() {
         if (instaView != null) {
-            instaView.NetworkSuccess();
+            instaView.RequestSuccess();
         }
     }
 }

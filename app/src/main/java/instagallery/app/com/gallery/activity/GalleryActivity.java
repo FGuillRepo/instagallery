@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -24,9 +25,11 @@ import instagallery.app.com.gallery.Model.Data;
 import instagallery.app.com.gallery.Network.InstaView;
 import instagallery.app.com.gallery.Network.InstagramRequestPresenter;
 import instagallery.app.com.gallery.R;
+import instagallery.app.com.gallery.adapter.CustomStaggeredGridLayoutManager;
+import instagallery.app.com.gallery.adapter.StaggeredGridLayoutAdapter;
 
 
-public class GalleryActivity extends AppCompatActivity implements InstaView {
+public class GalleryActivity extends AppCompatActivity implements InstaView, SwipeRefreshLayout.OnRefreshListener {
 
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.lv_feed) RecyclerView recyclerView;
@@ -36,6 +39,9 @@ public class GalleryActivity extends AppCompatActivity implements InstaView {
 
     public static String mUsername="";
     public static String mUserPicture="";
+
+    private CustomStaggeredGridLayoutManager mLayoutManager;
+    private StaggeredGridLayoutAdapter adapter;
     private InstagramRequestPresenter instagramPresenter;
     public static ArrayList<Data> data = new ArrayList<>();
     private String access_token = "";
@@ -56,6 +62,7 @@ public class GalleryActivity extends AppCompatActivity implements InstaView {
             if (getIntent()!=null) {
                 Intent i = this.getIntent();
                 access_token = i.getStringExtra("access_token");
+                InitRecyclerView();
                 data.clear();
                 // presenter to request instagram user data
                 instagramPresenter.Instagram_request(GalleryActivity.this,access_token,"instagram");
@@ -63,6 +70,19 @@ public class GalleryActivity extends AppCompatActivity implements InstaView {
         } else {
         }
 
+        swipeRefreshLayout.setOnRefreshListener(this);
+
+
+    }
+
+
+    private void InitRecyclerView() {
+        if (mLayoutManager==null) {
+            mLayoutManager = new CustomStaggeredGridLayoutManager(2, GridLayoutManager.VERTICAL);
+            recyclerView.setLayoutManager(mLayoutManager);
+            adapter = new StaggeredGridLayoutAdapter(this, data);
+            recyclerView.setAdapter(adapter);
+        }
     }
 
 
@@ -104,24 +124,35 @@ public class GalleryActivity extends AppCompatActivity implements InstaView {
     }
 
     @Override
-    public void showNetworkProgress() {
-        Log.d("Instagram response", "show view progress");
+    public void ShowRequestProgress() {
+        swipeRefreshLayout.setRefreshing(true);
+
 
     }
 
     @Override
     public void onError() {
-        Log.d("Instagram response", "show View error");
+        swipeRefreshLayout.setRefreshing(false);
+
     }
 
     @Override
-    public void NetworkSuccess() {
-        Log.d("Instagram response", "show View gallery");
+    public void RequestSuccess() {
+        adapter.notifyDataSetChanged();
+        swipeRefreshLayout.setRefreshing(false);
+
     }
 
     @Override
     public void noNetworkConnectivity() {
         Log.d("Instagram response", "show View no network");
 
+    }
+
+    @Override
+    public void onRefresh() {
+        InitRecyclerView();
+        data.clear();
+        instagramPresenter.Instagram_request(GalleryActivity.this,access_token,"instagram");
     }
 }

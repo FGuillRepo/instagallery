@@ -1,11 +1,11 @@
 package instagallery.app.com.gallery.Network;
 
 public interface InstaView {
-    void showNetworkProgress();
+    void ShowRequestProgress();
 
     void onError();
 
-    void NetworkSuccess();
+    void RequestSuccess();
 
     void noNetworkConnectivity();
 }
