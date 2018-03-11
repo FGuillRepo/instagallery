@@ -2,6 +2,7 @@ package instagallery.app.com.gallery.fragment;
 
 
 import android.animation.Animator;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
@@ -20,6 +21,7 @@ import instagallery.app.com.gallery.AuthenticationListener;
 import instagallery.app.com.gallery.R;
 import instagallery.app.com.gallery.Utils.Utils;
 import instagallery.app.com.gallery.activity.AuthenticationDialog;
+import instagallery.app.com.gallery.activity.GalleryActivity;
 import rx.Subscription;
 import rx.functions.Action1;
 
@@ -87,7 +89,13 @@ public class AuthenticationFragment extends Fragment implements AuthenticationLi
         if (access_token == null) {
             auth_dialog.dismiss();
         }
-        
+
+        Intent i = new Intent(getActivity(), GalleryActivity.class);
+        i.putExtra("access_token", access_token);
+        startActivity(i);
+        getActivity().overridePendingTransition(R.anim.enter_from_left, R.anim.exit_to_right);
+
+
     }
 
 

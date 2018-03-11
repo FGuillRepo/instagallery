@@ -4,7 +4,6 @@ import android.content.Context;
 import android.support.multidex.MultiDex;
 
 
-
 public class Application extends android.app.Application {
 
 
