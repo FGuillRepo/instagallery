@@ -27,6 +27,7 @@ import instagallery.app.com.gallery.Network.InstagramRequestPresenter;
 import instagallery.app.com.gallery.R;
 import instagallery.app.com.gallery.adapter.CustomStaggeredGridLayoutManager;
 import instagallery.app.com.gallery.adapter.StaggeredGridLayoutAdapter;
+import rx.functions.Action1;
 
 
 public class GalleryActivity extends AppCompatActivity implements InstaView, SwipeRefreshLayout.OnRefreshListener {
@@ -72,7 +73,13 @@ public class GalleryActivity extends AppCompatActivity implements InstaView, Swi
 
         swipeRefreshLayout.setOnRefreshListener(this);
 
+        //observer click events recyclerview
+        adapter.getViewClickedObservable().subscribe(new Action1<Object[]>() {
+            @Override
+            public void call(Object[] view) {
 
+            }
+        });
     }
 
 

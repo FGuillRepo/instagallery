@@ -14,6 +14,7 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.jakewharton.rxbinding.view.RxView;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
@@ -24,6 +25,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import instagallery.app.com.gallery.Model.Data;
 import instagallery.app.com.gallery.R;
+import rx.functions.Func1;
 
 public class StaggeredGridLayoutAdapter extends CustomRecyclerViewAdapter {
     private Activity activity;
@@ -63,6 +65,16 @@ public class StaggeredGridLayoutAdapter extends CustomRecyclerViewAdapter {
         final Data myHolder = (Data) getItem(position);
         myHolder.setPosition(position);
         final Object[] ItemObject=new Object[]{myHolder,((Holder) holder).images};
+
+        RxView.clicks(holder.itemView) //Item click binding, observer in GalleryActivity
+                .map(new Func1<Void, Object[]>() {
+                    @Override
+                    public Object[] call(Void holder)
+                    {
+                        return ItemObject;
+                    }
+                })
+                .subscribe(mViewClickSubject);
 
 
         BitmapFactory.Options opts = new BitmapFactory.Options();
