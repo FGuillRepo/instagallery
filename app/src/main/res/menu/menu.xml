@@ -1,0 +1,24 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:actionbarcompat_mse="http://schemas.android.com/apk/res-auto" >
+
+
+
+    <item
+        android:id="@+id/menu"
+        android:icon="@drawable/ic_menu"
+        android:orderInCategory="1"
+        actionbarcompat_mse:showAsAction="always"
+        android:title="menu">
+        <menu >
+
+            <item android:id="@+id/disconnect"
+                    android:orderInCategory="2"
+                 actionbarcompat_mse:showAsAction="always"
+                    android:title="Disconnect">
+
+            </item>
+        </menu>
+
+    </item>
+
+</menu>
