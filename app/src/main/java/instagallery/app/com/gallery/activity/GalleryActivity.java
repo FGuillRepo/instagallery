@@ -1,11 +1,13 @@
 package instagallery.app.com.gallery.activity;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,8 +21,12 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 import instagallery.app.com.gallery.Model.Data;
+import instagallery.app.com.gallery.Model.InstagramResponse;
 import instagallery.app.com.gallery.R;
-
+import instagallery.app.com.gallery.RetroFit.RestClient;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 public class GalleryActivity extends AppCompatActivity  {
@@ -32,6 +38,7 @@ public class GalleryActivity extends AppCompatActivity  {
     @BindView(R.id.swipeRefresh) SwipeRefreshLayout swipeRefreshLayout;
 
     public static ArrayList<Data> data = new ArrayList<>();
+    private String access_token = "";
 
 
     @Override
@@ -42,11 +49,37 @@ public class GalleryActivity extends AppCompatActivity  {
         setToolbar();
 
         // presenter initalize
-
         if (savedInstanceState == null) {
+            if (getIntent()!=null) {
+                Intent i = this.getIntent();
+                access_token = i.getStringExtra("access_token");
+                CallInstagram();
+            }
         } else {
         }
 
+    }
+
+    private void CallInstagram(){
+        if (access_token!=null) {
+            Call<InstagramResponse> call = RestClient.getRetroFitService().getTagPhotos(access_token);
+            call.enqueue(new Callback<InstagramResponse>() {
+                @Override
+                public void onResponse(Call<InstagramResponse> call, Response<InstagramResponse> response) {
+                    if (response.body() != null) {
+                        for (int i = 0; i < response.body().getData().length; i++) {
+                            data.add(response.body().getData()[i]);
+                            Log.d("Instagram response",response.body().getData()[i].getUser().getFull_name());
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<InstagramResponse> call, Throwable t) {
+                    //Handle failure
+                }
+            });
+        }
     }
 
 
