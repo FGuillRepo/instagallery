@@ -16,7 +16,10 @@ import com.jakewharton.rxbinding.view.RxView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import instagallery.app.com.gallery.Application;
+import instagallery.app.com.gallery.Model.AccessToken;
 import instagallery.app.com.gallery.Model.AuthenticationListener;
+import instagallery.app.com.gallery.Model.User;
 import instagallery.app.com.gallery.Network.InstaView;
 import instagallery.app.com.gallery.Network.InstagramRequestPresenter;
 import instagallery.app.com.gallery.R;
@@ -59,16 +62,17 @@ public class AuthenticationFragment extends Fragment implements AuthenticationLi
         instagramPresenter = new InstagramRequestPresenter(this);
 
         // Observer Token request interaction
-        instagramPresenter.getInstaInteractor().getAccessTokenChange().subscribe(new Observer<String>() {
+        instagramPresenter.getInstaInteractor().getAccessTokenChange().subscribe(new Observer<AccessToken>() {
             @Override
             public void onSubscribe(Disposable d) {
             }
 
             @Override
-            public void onNext(String access_token) {
+            public void onNext(AccessToken access_token) {
                 try {
+                    Application.getDatabaseHandler().addToken(new User(access_token.getUser().getId(),access_token.getAccessToken()));
                     Intent i = new Intent(getActivity(), GalleryActivity.class);
-                    i.putExtra(getActivity().getString(R.string.intent_acces_stoken), access_token);
+                    i.putExtra(getActivity().getString(R.string.intent_acces_stoken), access_token.getAccessToken());
                     getActivity().startActivity(i);
                     getActivity().overridePendingTransition(R.anim.enter_from_left, R.anim.exit_to_right);
                 }catch (NullPointerException e){

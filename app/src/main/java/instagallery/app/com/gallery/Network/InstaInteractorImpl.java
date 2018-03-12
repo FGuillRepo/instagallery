@@ -2,8 +2,8 @@ package instagallery.app.com.gallery.Network;
 
 import android.content.Context;
 
-import instagallery.app.com.gallery.Model.InstagramResponse;
 import instagallery.app.com.gallery.Model.AccessToken;
+import instagallery.app.com.gallery.Model.InstagramResponse;
 import instagallery.app.com.gallery.RetroFit.RetroFitClient;
 import io.reactivex.Observable;
 import io.reactivex.subjects.PublishSubject;
@@ -24,7 +24,7 @@ public class InstaInteractorImpl implements InstaInteractor {
 
     private PublishSubject<String> usernameObservable = PublishSubject.create();
     private PublishSubject<String> pictureProfilObservable = PublishSubject.create();
-    private PublishSubject<String> accessTokenObservable = PublishSubject.create();
+    private PublishSubject<AccessToken> accessTokenObservable = PublishSubject.create();
 
 
     @Override
@@ -81,7 +81,7 @@ public class InstaInteractorImpl implements InstaInteractor {
                 try {
                     listener.onSuccess();
                     AccessToken accessToken = response.body();
-                    setAccessToken(accessToken.getAccessToken());
+                    setAccessToken(accessToken);
 
                 } catch (NullPointerException e) {
                     e.printStackTrace();
@@ -103,7 +103,7 @@ public class InstaInteractorImpl implements InstaInteractor {
         usernameObservable.onNext(username);
     }
     public void setPictureProfil(String username) {pictureProfilObservable.onNext(username);}
-    public void setAccessToken(String accessToken) {accessTokenObservable.onNext(accessToken);}
+    public void setAccessToken(AccessToken accessToken) {accessTokenObservable.onNext(accessToken);}
 
 
     @Override
@@ -117,7 +117,7 @@ public class InstaInteractorImpl implements InstaInteractor {
     }
 
     @Override
-    public Observable<String> getAccessTokenChange() {return accessTokenObservable;
+    public Observable<AccessToken> getAccessTokenChange() {return accessTokenObservable;
     }
 
 }

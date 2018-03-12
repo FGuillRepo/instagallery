@@ -2,6 +2,7 @@ package instagallery.app.com.gallery.Network;
 
 import android.content.Context;
 
+import instagallery.app.com.gallery.Model.AccessToken;
 import io.reactivex.Observable;
 
 public interface InstaInteractor {
@@ -13,7 +14,7 @@ public interface InstaInteractor {
 
     public Observable<String> getUsernameChange();
     public Observable<String> getUserPictureChange();
-    public Observable<String> getAccessTokenChange();
+    public Observable<AccessToken> getAccessTokenChange();
 
     void getInstagram_Data(Context context, OnRequestFinishedListener listener, String accessToken);
 

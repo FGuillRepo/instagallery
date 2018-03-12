@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
+import instagallery.app.com.gallery.Application;
 import instagallery.app.com.gallery.Model.Data;
 import instagallery.app.com.gallery.Network.InstaView;
 import instagallery.app.com.gallery.Network.InstagramRequestPresenter;
@@ -134,6 +135,8 @@ public class GalleryActivity extends AppCompatActivity implements InstaView, Swi
                 access_token = i.getStringExtra(getApplicationContext().getString(R.string.intent_acces_stoken));
                 data.clear();
                 InitRecyclerView();
+                adapter.notifyDataSetChanged();
+
                 // presenter to request instagram user data
                 instagramPresenter.Gallery_ReqestData(GalleryActivity.this, access_token, getApplicationContext().getString(R.string.type_instagram));
             }else {
@@ -162,12 +165,14 @@ public class GalleryActivity extends AppCompatActivity implements InstaView, Swi
         swipeRefreshLayout.setOnRefreshListener(this);
 
         //observer click events recyclerview
-        adapter.getViewClickedObservable().subscribe(new Action1<Object[]>() {
-            @Override
-            public void call(Object[] view) {
-                showDetailedPicture(view);
-            }
-        });
+        if (adapter!=null) {
+            adapter.getViewClickedObservable().subscribe(new Action1<Object[]>() {
+                @Override
+                public void call(Object[] view) {
+                    showDetailedPicture(view);
+                }
+            });
+        }
     }
 
 
@@ -257,10 +262,13 @@ public class GalleryActivity extends AppCompatActivity implements InstaView, Swi
         int id = item.getItemId();
 
         if (id == R.id.disconnect) {
+
+            Application.getDatabaseHandler().deleteAllUserData();
             CookieSyncManager.createInstance(this);
             CookieManager cookieManager = CookieManager.getInstance();
             cookieManager.removeAllCookie();
-            finish();
+
+            ReturnScreen();
 
             return true;
         }
@@ -279,7 +287,7 @@ public class GalleryActivity extends AppCompatActivity implements InstaView, Swi
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onBackPressed();
+                ReturnScreen();
             }
         });
 
@@ -291,5 +299,15 @@ public class GalleryActivity extends AppCompatActivity implements InstaView, Swi
     protected void onDestroy() {
         super.onDestroy();
         barlayout_animation.getLottie().cancelAnimation();
+    }
+
+    private void ReturnScreen(){
+        if (Application.getDatabaseHandler().getUserCount()<=0){
+            Intent intent = new Intent(getBaseContext(), AuthentificationActivity.class);
+            startActivity(intent);
+            finish();
+        }else{
+            finish();
+        }
     }
 }

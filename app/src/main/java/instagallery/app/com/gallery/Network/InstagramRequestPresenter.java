@@ -27,15 +27,12 @@ public class InstagramRequestPresenter implements InstaPresenter, InstaInteracto
 
     @Override
     public void Gallery_ReqestData(Context context,String accessToken, String type) {
-        if (Utils.isConnected(context)) {
+
             if (type.equals(context.getResources().getString(R.string.type_instagram))) {
                 instaView.ShowRequestProgress();
                 // request Instagram data
                 instaInteractor.getInstagram_Data(context, this, accessToken);
             }
-        } else {
-            instaView.noNetworkConnectivity();
-        }
     }
 
 

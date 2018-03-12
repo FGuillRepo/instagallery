@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -88,6 +89,7 @@ public class GalleryStaggeredGridAdapter extends CustomRecyclerViewAdapter {
             height = screenHeight/(int)2.2;
         }
 
+
         Picasso.with(activity)
                 .load(myHolder.getImages().getStandard_resolution().getUrl())
                 .networkPolicy(NetworkPolicy.OFFLINE)
@@ -96,7 +98,7 @@ public class GalleryStaggeredGridAdapter extends CustomRecyclerViewAdapter {
                .into(((Holder) holder).images, new Callback() {
             @Override
             public void onSuccess() {
-
+                Log.v("Picasso","fetch cache");
             }
 
             @Override
@@ -108,9 +110,24 @@ public class GalleryStaggeredGridAdapter extends CustomRecyclerViewAdapter {
                         .placeholder(R.drawable.ic_photo_camera)
                         .resize(screenWidth / 2, height)
                         .centerCrop()
-                        .into(((Holder) holder).images);
+                        .into(((Holder) holder).images, new Callback() {
+                            @Override
+                            public void onSuccess() {
+                                Log.v("Picasso","fetch online");
+
+                            }
+
+                            @Override
+                            public void onError() {
+                                Log.v("Picasso","Could not fetch image");
+                            }
+                        });
+
             }
         });
+
+
+
 
         if (myHolder.getLikes().getCount()!=null) {
             ((Holder) holder).likes.setText(myHolder.getLikes().getCount());
