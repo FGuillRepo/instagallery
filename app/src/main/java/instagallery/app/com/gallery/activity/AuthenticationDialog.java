@@ -36,7 +36,7 @@ public class AuthenticationDialog extends Dialog {
             + Application.REDIRECT_URI
             + "&response_type=token"
             + "&display=touch&scope=public_content";
- 
+
     public AuthenticationDialog(@NonNull Context context, AuthenticationListener listener) {
         super(context);
         this.context = context;
@@ -62,11 +62,11 @@ public class AuthenticationDialog extends Dialog {
             }
  
             String access_token;
- 
+
             @Override
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
- 
+
                 if (url.contains("#access_token=") && !authComplete) {
                     Uri uri = Uri.parse(url);
                     access_token = uri.getEncodedFragment();
@@ -74,7 +74,7 @@ public class AuthenticationDialog extends Dialog {
                     authComplete = true;
                     listener.onCodeReceived(access_token);
                     dismiss();
- 
+
                 } else if (url.contains("error")){
                     String message = context.getString(R.string.auth_error);
                     Snackbar snackbar = Snackbar.make(coordinatorLayout, message, Snackbar.LENGTH_LONG);

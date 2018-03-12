@@ -15,6 +15,9 @@ import android.widget.Button;
 import com.airbnb.lottie.LottieAnimationView;
 import com.jakewharton.rxbinding.view.RxView;
 
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import instagallery.app.com.gallery.AuthenticationListener;
@@ -88,6 +91,7 @@ public class AuthenticationFragment extends Fragment implements AuthenticationLi
             auth_dialog.dismiss();
         }
 
+
         try {
             Intent i = new Intent(getActivity(), GalleryActivity.class);
             i.putExtra("access_token", access_token);
@@ -99,7 +103,20 @@ public class AuthenticationFragment extends Fragment implements AuthenticationLi
 
 
     }
-
+    public static String streamToString(InputStream is) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        int i = -1;
+        try {
+            byte[] bytes = new byte[1024];
+            while ((i = is.read(bytes)) != -1) {
+                baos.write(bytes, 0, i);
+                bytes = new byte[1024];
+            }
+            return new String(baos.toByteArray(), "UTF-8");
+        } catch (Exception e) {
+        }
+        return "";
+    }
 
     @Override
     public void onAnimationStart(Animator animation) {
