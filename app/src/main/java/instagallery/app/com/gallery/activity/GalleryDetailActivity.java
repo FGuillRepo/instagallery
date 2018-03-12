@@ -17,7 +17,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import instagallery.app.com.gallery.Model.Data;
 import instagallery.app.com.gallery.R;
-import instagallery.app.com.gallery.adapter.LinearLayoutAdapter;
+import instagallery.app.com.gallery.adapter.GalleryDetailsLinearAdapter;
 import rx.Subscription;
 import rx.functions.Action1;
 
@@ -41,7 +41,7 @@ public class GalleryDetailActivity extends Activity {
     private RecyclerView.SmoothScroller smoothScroller;
     private ArrayList<Data> arrayPicture = new ArrayList<>();
     private RecyclerView.LayoutManager mLayoutManager;
-    private LinearLayoutAdapter adapter;
+    private GalleryDetailsLinearAdapter adapter;
     private Subscription buttonSub;
 
     @Override
@@ -100,7 +100,7 @@ public class GalleryDetailActivity extends Activity {
     private void InitRecyclerView() {
         mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         recyclerView.setLayoutManager(mLayoutManager);
-        adapter = new LinearLayoutAdapter(this, arrayPicture);
+        adapter = new GalleryDetailsLinearAdapter(this, arrayPicture);
         recyclerView.setAdapter(adapter);
 
         smoothScroller = new

@@ -75,7 +75,7 @@ public class AuthenticationDialog extends Dialog {
                     listener.onCodeReceived(access_token);
                     dismiss();
  
-                } else {
+                } else if (url.contains("error")){
                     String message = context.getString(R.string.auth_error);
                     Snackbar snackbar = Snackbar.make(coordinatorLayout, message, Snackbar.LENGTH_LONG);
                     snackbar.show();

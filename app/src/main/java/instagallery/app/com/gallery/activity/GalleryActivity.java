@@ -3,6 +3,7 @@ package instagallery.app.com.gallery.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -31,33 +32,35 @@ import instagallery.app.com.gallery.Model.Data;
 import instagallery.app.com.gallery.Network.InstaView;
 import instagallery.app.com.gallery.Network.InstagramRequestPresenter;
 import instagallery.app.com.gallery.R;
-import instagallery.app.com.gallery.adapter.CustomStaggeredGridLayoutManager;
-import instagallery.app.com.gallery.adapter.StaggeredGridLayoutAdapter;
+import instagallery.app.com.gallery.Utils.Utils;
+import instagallery.app.com.gallery.adapter.CustomStaggeredLayoutManager;
+import instagallery.app.com.gallery.adapter.GalleryStaggeredGridAdapter;
+import instagallery.app.com.gallery.view.CollapseLayoutLottieView;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 import rx.functions.Action1;
 
+import static instagallery.app.com.gallery.Utils.Utils.showSnackbarConnectivity;
+
 
 public class GalleryActivity extends AppCompatActivity implements InstaView, SwipeRefreshLayout.OnRefreshListener {
 
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
-    @BindView(R.id.lv_feed)
-    RecyclerView recyclerView;
-    @BindView(R.id.username)
-    TextView username;
-    @BindView(R.id.user_picture)
-    CircleImageView userpicture;
-    @BindView(R.id.swipeRefresh)
-    SwipeRefreshLayout swipeRefreshLayout;
+    @BindView(R.id.toolbar) Toolbar toolbar;
+    @BindView(R.id.lv_feed) RecyclerView recyclerView;
+    @BindView(R.id.username) TextView username;
+    @BindView(R.id.user_picture) CircleImageView userpicture;
+    @BindView(R.id.swipeRefresh) SwipeRefreshLayout swipeRefreshLayout;
+    @BindView(R.id.barlayout_animation) CollapseLayoutLottieView barlayout_animation;
+    @BindView(R.id.coordinatorLayout) CoordinatorLayout coordinatorLayout;
+
 
     public static String mUsername = "";
     public static String mUserPicture = "";
     private String DATA_LIST_KEY = "DATA_LIST_KEY";
     private String TOKEN_KEY = "TOKEN";
 
-    private CustomStaggeredGridLayoutManager mLayoutManager;
-    private StaggeredGridLayoutAdapter adapter;
+    private CustomStaggeredLayoutManager mLayoutManager;
+    private GalleryStaggeredGridAdapter adapter;
     private InstagramRequestPresenter instagramPresenter;
     public static ArrayList<Data> data = new ArrayList<>();
     private String access_token = "";
@@ -69,7 +72,6 @@ public class GalleryActivity extends AppCompatActivity implements InstaView, Swi
         setContentView(R.layout.activity_gallery);
         ButterKnife.bind(this);
         setToolbar();
-
 
         // presenter initalize
         instagramPresenter = new InstagramRequestPresenter(this);
@@ -129,16 +131,18 @@ public class GalleryActivity extends AppCompatActivity implements InstaView, Swi
             if (getIntent() != null) {
                 Intent i = this.getIntent();
                 access_token = i.getStringExtra("access_token");
-                InitRecyclerView();
                 data.clear();
+                InitRecyclerView();
                 // presenter to request instagram user data
                 instagramPresenter.Instagram_request(GalleryActivity.this, access_token, "instagram");
+            }else {
+                finish();
             }
         } else {
-            if (data != null) {
-                data = savedInstanceState.getParcelableArrayList(DATA_LIST_KEY);
-                access_token = savedInstanceState.getString(TOKEN_KEY);
-
+            barlayout_animation.ReMeasure();
+            data = savedInstanceState.getParcelableArrayList(DATA_LIST_KEY);
+            access_token = savedInstanceState.getString(TOKEN_KEY);
+            if (data.size()>0) {
                     mUsername = data.get(0).getUser().getFull_name();
                     mUserPicture = data.get(0).getImages().getStandard_resolution().getUrl();
 
@@ -168,9 +172,9 @@ public class GalleryActivity extends AppCompatActivity implements InstaView, Swi
 
     private void InitRecyclerView() {
         if (mLayoutManager == null) {
-            mLayoutManager = new CustomStaggeredGridLayoutManager(2, GridLayoutManager.VERTICAL);
+            mLayoutManager = new CustomStaggeredLayoutManager(2, GridLayoutManager.VERTICAL);
             recyclerView.setLayoutManager(mLayoutManager);
-            adapter = new StaggeredGridLayoutAdapter(this, data);
+            adapter = new GalleryStaggeredGridAdapter(this, data);
             recyclerView.setAdapter(adapter);
         }
     }
@@ -196,6 +200,7 @@ public class GalleryActivity extends AppCompatActivity implements InstaView, Swi
 
     @Override
     public void ShowRequestProgress() {
+        barlayout_animation.startAnimation();
         swipeRefreshLayout.setRefreshing(true);
 
     }
@@ -214,16 +219,20 @@ public class GalleryActivity extends AppCompatActivity implements InstaView, Swi
 
     @Override
     public void noNetworkConnectivity() {
-        Log.d("Instagram response", "show View no network");
+        showSnackbarConnectivity(getApplicationContext(),coordinatorLayout);
 
     }
 
     @Override
     public void onRefresh() {
-        InitRecyclerView();
-        data.clear();
-        adapter.clearData();
-        instagramPresenter.Instagram_request(GalleryActivity.this, access_token, "instagram");
+        if(Utils.isConnected(getApplicationContext())) {
+            data.clear();
+            InitRecyclerView();
+            adapter.clearData();
+            instagramPresenter.Instagram_request(GalleryActivity.this, access_token, "instagram");
+        }else {
+            showSnackbarConnectivity(getApplicationContext(),coordinatorLayout);
+        }
     }
 
 
@@ -272,4 +281,9 @@ public class GalleryActivity extends AppCompatActivity implements InstaView, Swi
         });
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        barlayout_animation.getLottie().cancelAnimation();
+    }
 }

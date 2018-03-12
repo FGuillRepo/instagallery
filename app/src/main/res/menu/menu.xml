@@ -12,9 +12,9 @@
         <menu >
 
             <item android:id="@+id/disconnect"
-                    android:orderInCategory="2"
-                 actionbarcompat_mse:showAsAction="always"
-                    android:title="Disconnect">
+                android:orderInCategory="2"
+                actionbarcompat_mse:showAsAction="always"
+                android:title="Disconnect">
 
             </item>
         </menu>

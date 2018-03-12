@@ -4,6 +4,8 @@ import android.app.Dialog;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -82,6 +84,12 @@ public class Utils {
         });
 
         dialog.show();
+    }
+
+    public static  void showSnackbarConnectivity(Context context, CoordinatorLayout coordinatorLayout){
+        String message = context.getString(R.string.dialog_network_message);
+        Snackbar snackbar = Snackbar.make(coordinatorLayout, message, Snackbar.LENGTH_LONG);
+        snackbar.show();
     }
 
 

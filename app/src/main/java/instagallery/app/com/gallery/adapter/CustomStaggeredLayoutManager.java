@@ -4,7 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 
-public class CustomStaggeredGridLayoutManager extends StaggeredGridLayoutManager {
+public class CustomStaggeredLayoutManager extends StaggeredGridLayoutManager {
 
     private boolean isScrollEnabled = true;
 
@@ -26,7 +26,7 @@ public class CustomStaggeredGridLayoutManager extends StaggeredGridLayoutManager
         return isScrollEnabled && super.canScrollVertically();
     }
 
-            public CustomStaggeredGridLayoutManager(int spanCount, int orientation) {
+            public CustomStaggeredLayoutManager(int spanCount, int orientation) {
                 super(spanCount,orientation);
             }
 

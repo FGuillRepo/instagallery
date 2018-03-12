@@ -5,8 +5,8 @@ import android.animation.Animator;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -73,9 +73,7 @@ public class AuthenticationFragment extends Fragment implements AuthenticationLi
                     auth_dialog.setCancelable(true);
                     auth_dialog.show();
                 } else {
-                    String message = getActivity().getString(R.string.dialog_network_message);
-                    Snackbar snackbar = Snackbar.make(coordinatorLayout, message, Snackbar.LENGTH_LONG);
-                    snackbar.show();
+                    Utils.showSnackbarConnectivity(getActivity(),coordinatorLayout);;
                 }
             }
         });
@@ -90,10 +88,14 @@ public class AuthenticationFragment extends Fragment implements AuthenticationLi
             auth_dialog.dismiss();
         }
 
-        Intent i = new Intent(getActivity(), GalleryActivity.class);
-        i.putExtra("access_token", access_token);
-        startActivity(i);
-        getActivity().overridePendingTransition(R.anim.enter_from_left, R.anim.exit_to_right);
+        try {
+            Intent i = new Intent(getActivity(), GalleryActivity.class);
+            i.putExtra("access_token", access_token);
+            getActivity().startActivity(i);
+            getActivity().overridePendingTransition(R.anim.enter_from_left, R.anim.exit_to_right);
+        }catch (NullPointerException e){
+            Log.d("Orientation change"," null getPackageName()");
+        }
 
 
     }
