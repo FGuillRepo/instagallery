@@ -13,6 +13,10 @@ public interface InstaInteractor {
 
     public Observable<String> getUsernameChange();
     public Observable<String> getUserPictureChange();
+    public Observable<String> getAccessTokenChange();
 
-    void getInstagram_Data(final Context context, final OnRequestFinishedListener listener, String accessToken);
-    }
+    void getInstagram_Data(Context context, OnRequestFinishedListener listener, String accessToken);
+
+    void getAccessToken(Context context, OnRequestFinishedListener listener,String code);
+
+}

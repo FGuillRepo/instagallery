@@ -21,19 +21,14 @@ public class InstagramRequestPresenter implements InstaPresenter, InstaInteracto
         this.instaInteractor = new InstaInteractorImpl();
     }
 
-    public InstaInteractor getInstaInteractor() {
-        return instaInteractor;
-    }
 
-    // calling method to request Instagram data
+    // Request Instagram data user
 
     @Override
-    public void Instagram_request(Context context,String accessToken, String type) {
-
+    public void Gallery_ReqestData(Context context,String accessToken, String type) {
         if (Utils.isConnected(context)) {
             if (type.equals("instagram")) {
                 instaView.ShowRequestProgress();
-
                 // request Instagram data
                 instaInteractor.getInstagram_Data(context, this, accessToken);
             }
@@ -41,6 +36,21 @@ public class InstagramRequestPresenter implements InstaPresenter, InstaInteracto
             instaView.noNetworkConnectivity();
         }
     }
+
+
+    /**
+     * Login request Access Token
+     */
+
+    @Override
+    public void Login_RequestAccessToken(Context context,String code) {
+        if (Utils.isConnected(context)) {
+                instaInteractor.getAccessToken(context,this, code);
+        } else {
+            instaView.noNetworkConnectivity();
+        }
+    }
+
 
     @Override public void onDestroy() {
         instaView = null;
@@ -60,4 +70,9 @@ public class InstagramRequestPresenter implements InstaPresenter, InstaInteracto
             instaView.RequestSuccess();
         }
     }
+
+    public InstaInteractor getInstaInteractor() {
+        return instaInteractor;
+    }
+
 }

@@ -1,4 +1,4 @@
-package instagallery.app.com.gallery;
+package instagallery.app.com.gallery.Model;
 
 public interface AuthenticationListener {
  

@@ -1,6 +1,7 @@
 package instagallery.app.com.gallery.RetroFit;
 
 
+import instagallery.app.com.gallery.Model.AccessToken;
 import instagallery.app.com.gallery.Model.InstagramResponse;
 import retrofit2.Call;
 import retrofit2.http.Field;
@@ -17,14 +18,10 @@ public interface RetrofitService {
 
 
     @FormUrlEncoded
-    @POST("oauth/access_token")
-    Call<AccessToken> getAccessToken(@Field("client_id") String client_id,
-                                       @Field("client_secret") String client_secret,
-                                       @Field("redirect_uri") String redirect_uri,
-                                       @Field("grant_type") String grant_type, @Field("code") String code);
-    /* not use
+    @POST("oauth/access_token/?client_id=client_id&client_secret=client_secret&grant_type=authorization_code&redirect_uri=redirect_uri&code=code")
+    Call<AccessToken> getAccessToken(@Field("client_id") String client_id, @Field("client_secret") String client_secret,
+                                     @Field("grant_type") String grant_type,
+                                     @Field("redirect_uri") String redirect_uri,
+                                     @Field("code") String code);
 
-    @GET("v1/users/self/media/recent?access_token=access_token")
-    Observable<Call<InstagramResponse>> getTagPhotoss(@Query("access_token") String access_token);
-    */
 }
