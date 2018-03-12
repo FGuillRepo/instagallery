@@ -4,7 +4,7 @@ import android.content.Context;
 
 import instagallery.app.com.gallery.Model.InstagramResponse;
 import instagallery.app.com.gallery.Model.AccessToken;
-import instagallery.app.com.gallery.RetroFit.RestClient;
+import instagallery.app.com.gallery.RetroFit.RetroFitClient;
 import io.reactivex.Observable;
 import io.reactivex.subjects.PublishSubject;
 import retrofit2.Call;
@@ -33,7 +33,7 @@ public class InstaInteractorImpl implements InstaInteractor {
         username ="";
         pictureuser ="";
         this.listener = listener;
-        Call<InstagramResponse> call = RestClient.getRetroFitService(context).getTagPhotos(accessToken);
+        Call<InstagramResponse> call = RetroFitClient.getRetroFitService(context).getTagPhotos(accessToken);
         call.enqueue(new Callback<InstagramResponse>() {
             @Override
             public void onResponse(Call<InstagramResponse> call, Response<InstagramResponse> response) {
@@ -72,7 +72,7 @@ public class InstaInteractorImpl implements InstaInteractor {
         this.listener=listener;
        Login_URL login_url=new Login_URL(context);
 
-        Call<AccessToken> call = RestClient.getRetroFitService(context).getAccessToken(login_url.getCLIENT_ID(),
+        Call<AccessToken> call = RetroFitClient.getRetroFitService(context).getAccessToken(login_url.getCLIENT_ID(),
                 login_url.getCLIENT_SECRET(),login_url.getGRANT_TYPE(),login_url.getREDIRECT_URI(),code);
 
         call.enqueue(new Callback<AccessToken>() {

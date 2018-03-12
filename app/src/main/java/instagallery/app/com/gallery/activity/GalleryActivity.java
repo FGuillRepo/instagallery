@@ -134,7 +134,7 @@ public class GalleryActivity extends AppCompatActivity implements InstaView, Swi
                 data.clear();
                 InitRecyclerView();
                 // presenter to request instagram user data
-                instagramPresenter.Instagram_request(GalleryActivity.this, access_token, "instagram");
+                instagramPresenter.Gallery_ReqestData(GalleryActivity.this, access_token, "instagram");
             }else {
                 finish();
             }
@@ -229,7 +229,7 @@ public class GalleryActivity extends AppCompatActivity implements InstaView, Swi
             data.clear();
             InitRecyclerView();
             adapter.clearData();
-            instagramPresenter.Instagram_request(GalleryActivity.this, access_token, "instagram");
+            instagramPresenter.Gallery_ReqestData(GalleryActivity.this, access_token, "instagram");
         }else {
             showSnackbarConnectivity(getApplicationContext(),coordinatorLayout);
         }
