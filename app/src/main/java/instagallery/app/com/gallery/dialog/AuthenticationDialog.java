@@ -1,4 +1,4 @@
-package instagallery.app.com.gallery.activity;
+package instagallery.app.com.gallery.dialog;
 
 import android.annotation.TargetApi;
 import android.app.Dialog;

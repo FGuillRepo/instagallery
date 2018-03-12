@@ -56,8 +56,8 @@ public class GalleryActivity extends AppCompatActivity implements InstaView, Swi
 
     public static String mUsername = "";
     public static String mUserPicture = "";
-    private String DATA_LIST_KEY = "DATA_LIST_KEY";
-    private String TOKEN_KEY = "TOKEN";
+    private String DATA_LIST_KEY;
+    private String TOKEN_KEY;
 
     private CustomStaggeredLayoutManager mLayoutManager;
     private GalleryStaggeredGridAdapter adapter;
@@ -71,7 +71,7 @@ public class GalleryActivity extends AppCompatActivity implements InstaView, Swi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gallery);
         ButterKnife.bind(this);
-        setToolbar();
+        setup();
 
         // presenter initalize
         instagramPresenter = new InstagramRequestPresenter(this);
@@ -130,11 +130,11 @@ public class GalleryActivity extends AppCompatActivity implements InstaView, Swi
         if (savedInstanceState == null) {
             if (getIntent() != null) {
                 Intent i = this.getIntent();
-                access_token = i.getStringExtra("access_token");
+                access_token = i.getStringExtra(getApplicationContext().getString(R.string.intent_acces_stoken));
                 data.clear();
                 InitRecyclerView();
                 // presenter to request instagram user data
-                instagramPresenter.Gallery_ReqestData(GalleryActivity.this, access_token, "instagram");
+                instagramPresenter.Gallery_ReqestData(GalleryActivity.this, access_token, getApplicationContext().getString(R.string.type_instagram));
             }else {
                 finish();
             }
@@ -142,13 +142,13 @@ public class GalleryActivity extends AppCompatActivity implements InstaView, Swi
             barlayout_animation.ReMeasure();
             data = savedInstanceState.getParcelableArrayList(DATA_LIST_KEY);
             access_token = savedInstanceState.getString(TOKEN_KEY);
+
             if (data.size()>0) {
                     mUsername = data.get(0).getUser().getFull_name();
                     mUserPicture = data.get(0).getImages().getStandard_resolution().getUrl();
 
                 username.setText(mUsername);
-                Picasso.with(GalleryActivity.this)
-                        .load(mUserPicture)
+                Picasso.with(GalleryActivity.this).load(mUserPicture)
                         .networkPolicy(NetworkPolicy.OFFLINE)
                         .resize(200, 200)
                         .centerCrop()
@@ -229,7 +229,7 @@ public class GalleryActivity extends AppCompatActivity implements InstaView, Swi
             data.clear();
             InitRecyclerView();
             adapter.clearData();
-            instagramPresenter.Gallery_ReqestData(GalleryActivity.this, access_token, "instagram");
+            instagramPresenter.Gallery_ReqestData(GalleryActivity.this, access_token, getApplicationContext().getString(R.string.type_instagram));
         }else {
             showSnackbarConnectivity(getApplicationContext(),coordinatorLayout);
         }
@@ -267,7 +267,7 @@ public class GalleryActivity extends AppCompatActivity implements InstaView, Swi
     }
 
 
-    public void setToolbar() {
+    public void setup() {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -279,6 +279,10 @@ public class GalleryActivity extends AppCompatActivity implements InstaView, Swi
                 onBackPressed();
             }
         });
+
+        DATA_LIST_KEY  = getApplicationContext().getResources().getString(R.string.saved_data_list);
+        TOKEN_KEY  = getApplicationContext().getResources().getString(R.string.saved_token);
+
     }
 
     @Override

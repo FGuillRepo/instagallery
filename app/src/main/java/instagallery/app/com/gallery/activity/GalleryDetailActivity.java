@@ -35,8 +35,8 @@ public class GalleryDetailActivity extends Activity {
     private int current_position=-1;
     private Data pictureData=null;
 
-    private String POSITION_SAVED="POSITION_KEY";
-    private String DATA_LIST_SAVED="DATA_LIST_KEY";
+    private String POSITION_KEY="POSITION_KEY";
+    private String DATA_LIST_KEY="DATA_LIST_KEY";
 
     private RecyclerView.SmoothScroller smoothScroller;
     private ArrayList<Data> arrayPicture = new ArrayList<>();
@@ -50,6 +50,9 @@ public class GalleryDetailActivity extends Activity {
         setContentView(R.layout.fragment_detailgallery);
         ButterKnife.bind(this,this);
 
+        DATA_LIST_KEY  = getApplicationContext().getResources().getString(R.string.saved_data_list);
+        POSITION_KEY  = getApplicationContext().getResources().getString(R.string.saved_token);
+
 
         if (savedInstanceState==null){
             Intent i = this.getIntent();
@@ -59,8 +62,8 @@ public class GalleryDetailActivity extends Activity {
         }
         else {
             if (arrayPicture!=null) {
-                current_position = savedInstanceState.getInt(POSITION_SAVED);
-                arrayPicture= savedInstanceState.getParcelableArrayList(DATA_LIST_SAVED);
+                current_position = savedInstanceState.getInt(POSITION_KEY);
+                arrayPicture= savedInstanceState.getParcelableArrayList(DATA_LIST_KEY);
             }
         }
 
@@ -76,10 +79,12 @@ public class GalleryDetailActivity extends Activity {
         RxView.clicks(leftSwipe).subscribe(new Action1<Void>() {
             @Override
             public void call(Void aVoid) {
-                if (current_position>0 && current_position <= GalleryActivity.data.size()){
+                if (GalleryActivity.data.size()>0){
+                if (current_position>0 && current_position <= GalleryActivity.data.size()) {
                     current_position--;
                     smoothScroller.setTargetPosition(current_position);
                     mLayoutManager.startSmoothScroll(smoothScroller);
+                }
                 }
             }
         });
@@ -87,10 +92,12 @@ public class GalleryDetailActivity extends Activity {
         RxView.clicks(rightSwipe).subscribe(new Action1<Void>() {
             @Override
             public void call(Void aVoid) {
-                if (current_position< GalleryActivity.data.size()){
-                    current_position++;
-                    smoothScroller.setTargetPosition(current_position);
-                    mLayoutManager.startSmoothScroll(smoothScroller);
+                if (GalleryActivity.data.size()>0){
+                    if (current_position< GalleryActivity.data.size()) {
+                        current_position++;
+                        smoothScroller.setTargetPosition(current_position);
+                        mLayoutManager.startSmoothScroll(smoothScroller);
+                    }
                 }
             }
         });
@@ -117,8 +124,8 @@ public class GalleryDetailActivity extends Activity {
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        outState.putParcelableArrayList(DATA_LIST_SAVED, new ArrayList<Data>(adapter.getList()));
-        outState.putInt(POSITION_SAVED, current_position);
+        outState.putParcelableArrayList(DATA_LIST_KEY, new ArrayList<Data>(adapter.getList()));
+        outState.putInt(POSITION_KEY, current_position);
         super.onSaveInstanceState(outState);
     }
 

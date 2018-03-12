@@ -6,6 +6,15 @@
     <string name="username">username</string>
     <string name="gallery_title">Insta Gallery</string>
 
+    <!-- Gallery -->
+    <string name="type_instagram">instagram</string>
+    <string name="intent_acces_stoken">access_token</string>
+    <string name="saved_data_list">DATA_LIST_KEY</string>
+    <string name="saved_token">TOKEN_KEY</string>
+    <string name="saved_position">POSITION_KEY</string>
+
+
+
     <!-- Authentication -->
     <string name="auth_base_url">https://api.instagram.com/</string>
     <string name="auth_client_id">8c26e90e81484d91836edf2b36b67f0c</string>
@@ -28,5 +37,6 @@
 
     <!-- Transition-->
     <string name="transition_string">transition gallery detail</string>
+
 
 </resources>

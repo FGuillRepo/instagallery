@@ -2,6 +2,7 @@ package instagallery.app.com.gallery.Network;
 
 import android.content.Context;
 
+import instagallery.app.com.gallery.R;
 import instagallery.app.com.gallery.Utils.Utils;
 
 /**
@@ -27,7 +28,7 @@ public class InstagramRequestPresenter implements InstaPresenter, InstaInteracto
     @Override
     public void Gallery_ReqestData(Context context,String accessToken, String type) {
         if (Utils.isConnected(context)) {
-            if (type.equals("instagram")) {
+            if (type.equals(context.getResources().getString(R.string.type_instagram))) {
                 instaView.ShowRequestProgress();
                 // request Instagram data
                 instaInteractor.getInstagram_Data(context, this, accessToken);

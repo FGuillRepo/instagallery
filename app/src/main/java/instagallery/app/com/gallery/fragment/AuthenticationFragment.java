@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,8 +21,8 @@ import instagallery.app.com.gallery.Network.InstaView;
 import instagallery.app.com.gallery.Network.InstagramRequestPresenter;
 import instagallery.app.com.gallery.R;
 import instagallery.app.com.gallery.Utils.Utils;
-import instagallery.app.com.gallery.activity.AuthenticationDialog;
 import instagallery.app.com.gallery.activity.GalleryActivity;
+import instagallery.app.com.gallery.dialog.AuthenticationDialog;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 import rx.Subscription;
@@ -69,11 +68,10 @@ public class AuthenticationFragment extends Fragment implements AuthenticationLi
             public void onNext(String access_token) {
                 try {
                     Intent i = new Intent(getActivity(), GalleryActivity.class);
-                    i.putExtra("access_token", access_token);
+                    i.putExtra(getActivity().getString(R.string.intent_acces_stoken), access_token);
                     getActivity().startActivity(i);
                     getActivity().overridePendingTransition(R.anim.enter_from_left, R.anim.exit_to_right);
                 }catch (NullPointerException e){
-                    Log.d("Orientation change"," null getPackageName()");
                 }
             }
 
