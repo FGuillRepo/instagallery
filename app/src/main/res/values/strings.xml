@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Instagram Feeds Guillaouic Test</string>
+    <string name="app_name">Guillaouic Instagram Test </string>
 
     <!-- Menu -->
     <string name="access_auth">Login instagram</string>
@@ -17,12 +17,12 @@
 
     <!-- Authentication -->
     <string name="auth_base_url">https://api.instagram.com/</string>
-    <string name="auth_client_id">8c26e90e81484d91836edf2b36b67f0c</string>
-    <string name="auth_client_secret">c89e353051a44be4bd216529956ce807</string>
-    <string name="auth_redirect_uri">https://guillalab.wixsite.com/lifesafe</string>
+    <string name="auth_client_id">8c26e90e81484d91836edf2b36b67f0c</string> <!-- Change value to test -->
+    <string name="auth_client_secret">c89e353051a44be4bd216529956ce807</string> <!-- Change value to test -->
+    <string name="auth_redirect_uri">https://guillalab.wixsite.com/lifesafe</string> <!-- Change value to your test -->
     <string name="auth_authUrl">oauth/authorize/</string>
     <string name="auth_granttype">authorization_code</string>
-    <string name="auth_error">An error occured, please retry or contact the developer to check if you are a sandbox user</string>
+    <string name="auth_error">An error occured, please retry</string>
 
 
     <!-- Dialog network-->
