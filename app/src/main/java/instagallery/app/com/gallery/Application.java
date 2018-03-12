@@ -9,7 +9,6 @@ public class Application extends android.app.Application {
 
     public static Application application;
     private static Context context;
-
     @Override
     protected void attachBaseContext(Context context) {
         super.attachBaseContext(context);
@@ -21,6 +20,7 @@ public class Application extends android.app.Application {
     public void onCreate() {
         super.onCreate();
         context = getApplicationContext();
+
     }
 
     public static void setContext(Context context) {

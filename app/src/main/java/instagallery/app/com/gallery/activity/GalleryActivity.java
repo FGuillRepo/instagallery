@@ -75,6 +75,7 @@ public class GalleryActivity extends AppCompatActivity implements InstaView, Swi
 
         // presenter initalize
         instagramPresenter = new InstagramRequestPresenter(this);
+        //observer username and picture on request
         instagramPresenter.getInstaInteractor().getUsernameChange().subscribe(new Observer<String>() {
             @Override
             public void onSubscribe(Disposable d) {
@@ -232,6 +233,8 @@ public class GalleryActivity extends AppCompatActivity implements InstaView, Swi
             instagramPresenter.Gallery_ReqestData(GalleryActivity.this, access_token, getApplicationContext().getString(R.string.type_instagram));
         }else {
             showSnackbarConnectivity(getApplicationContext(),coordinatorLayout);
+            swipeRefreshLayout.setRefreshing(false);
+
         }
     }
 
@@ -282,7 +285,6 @@ public class GalleryActivity extends AppCompatActivity implements InstaView, Swi
 
         DATA_LIST_KEY  = getApplicationContext().getResources().getString(R.string.saved_data_list);
         TOKEN_KEY  = getApplicationContext().getResources().getString(R.string.saved_token);
-
     }
 
     @Override

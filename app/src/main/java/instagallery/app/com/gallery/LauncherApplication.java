@@ -9,7 +9,7 @@ import instagallery.app.com.gallery.activity.AuthentificationActivity;
 
 
 /**
- * Created by Moi on 23/06/2016.
+ * Created by Franck Guillaouic on 23/06/2016.
  */
 public class LauncherApplication extends Activity {
 
@@ -19,10 +19,11 @@ public class LauncherApplication extends Activity {
         this.setContentView(R.layout.activity_launcher);
 
         if (savedInstanceState == null) {
-                        Intent intent = new Intent(getBaseContext(), AuthentificationActivity.class);
-                        startActivity(intent);
-                        finish();
-            }
+                Intent intent = new Intent(getBaseContext(), AuthentificationActivity.class);
+                startActivity(intent);
+                finish();
+        }
     }
+
 
 }
