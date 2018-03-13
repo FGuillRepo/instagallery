@@ -90,6 +90,7 @@ public class GalleryStaggeredGridAdapter extends CustomRecyclerViewAdapter {
         }
 
 
+
         Picasso.with(activity)
                 .load(myHolder.getImages().getStandard_resolution().getUrl())
                 .networkPolicy(NetworkPolicy.OFFLINE)
