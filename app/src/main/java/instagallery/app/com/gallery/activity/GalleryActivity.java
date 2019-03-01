@@ -144,9 +144,8 @@ public class GalleryActivity extends AppCompatActivity implements InstaView, Swi
             }
         } else {
             barlayout_animation.ReMeasure();
-            data = savedInstanceState.getParcelableArrayList(DATA_LIST_KEY);
             access_token = savedInstanceState.getString(TOKEN_KEY);
-
+            data = savedInstanceState.getParcelableArrayList(DATA_LIST_KEY);
             if (data.size()>0) {
                     mUsername = data.get(0).getUser().getFull_name();
                     mUserPicture = data.get(0).getImages().getStandard_resolution().getUrl();
