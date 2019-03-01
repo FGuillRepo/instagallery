@@ -24,6 +24,7 @@ public class AuthenticationDialog extends Dialog {
 
     private final AuthenticationListener listener;
     private Context context;
+    private String code;
 
     @BindView(R.id.web_view)
     WebView web_view;
@@ -52,6 +53,8 @@ public class AuthenticationDialog extends Dialog {
     private void initializeWebView() {
 
         web_view.loadUrl(login_url.getAuthenticationURL());
+        web_view.getSettings().setJavaScriptEnabled(true);
+        web_view.getSettings().setDomStorageEnabled(true);
         web_view.setWebViewClient(new WebViewClient() {
 
             boolean authComplete = false;
@@ -60,7 +63,6 @@ public class AuthenticationDialog extends Dialog {
                 super.onPageStarted(view, url, favicon);
             }
 
-            String code;
 
             @SuppressWarnings("deprecation")
             @Override
@@ -79,7 +81,7 @@ public class AuthenticationDialog extends Dialog {
             private boolean handleURL(String url) {
                 if (url.startsWith(login_url.getREDIRECT_URI()))
                 {
-                    Log.d("totoo",login_url.getREDIRECT_URI());
+                    Log.d("redirect_url",login_url.getREDIRECT_URI());
                     String parts[] = url.split("=");
                     code = parts[1];  //This is your request token.
                     authComplete = true;
