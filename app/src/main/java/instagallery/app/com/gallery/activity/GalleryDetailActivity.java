@@ -25,11 +25,8 @@ import rx.functions.Action1;
 public class GalleryDetailActivity extends Activity {
 
     @BindView(R.id.recyclerview) RecyclerView recyclerView;
-
     @BindView(R.id.left_swipe) ImageView leftSwipe;
-
     @BindView(R.id.right_swipe) ImageView rightSwipe;
-
     @BindView(R.id.close_button) ImageView close;
 
     private int current_position=-1;

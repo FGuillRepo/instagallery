@@ -72,7 +72,9 @@ public class GalleryActivity extends AppCompatActivity implements InstaView, Swi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gallery);
         ButterKnife.bind(this);
+
         setup();
+        InitRecyclerView();
 
         // presenter initalize
         instagramPresenter = new InstagramRequestPresenter(this);
@@ -134,8 +136,6 @@ public class GalleryActivity extends AppCompatActivity implements InstaView, Swi
                 Intent i = this.getIntent();
                 access_token = i.getStringExtra(getApplicationContext().getString(R.string.intent_acces_stoken));
                 data.clear();
-                InitRecyclerView();
-                adapter.notifyDataSetChanged();
 
                 // presenter to request instagram user data
                 instagramPresenter.Gallery_ReqestData(GalleryActivity.this, access_token, getApplicationContext().getString(R.string.type_instagram));
@@ -158,11 +158,8 @@ public class GalleryActivity extends AppCompatActivity implements InstaView, Swi
                         .centerCrop()
                         .into(userpicture);
 
-                InitRecyclerView();
             }
         }
-
-        swipeRefreshLayout.setOnRefreshListener(this);
 
         //observer click events recyclerview
         if (adapter!=null) {
@@ -183,6 +180,25 @@ public class GalleryActivity extends AppCompatActivity implements InstaView, Swi
             adapter = new GalleryStaggeredGridAdapter(this, data);
             recyclerView.setAdapter(adapter);
         }
+    }
+
+    public void setup() {
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        toolbar.setNavigationIcon(getResources().getDrawable(R.drawable.ic_left_arrow));
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ReturnScreen();
+            }
+        });
+
+        DATA_LIST_KEY  = getApplicationContext().getResources().getString(R.string.saved_data_list);
+        TOKEN_KEY  = getApplicationContext().getResources().getString(R.string.saved_token);
+
+        swipeRefreshLayout.setOnRefreshListener(this);
     }
 
     public void showDetailedPicture(Object[] data) {
@@ -278,22 +294,7 @@ public class GalleryActivity extends AppCompatActivity implements InstaView, Swi
     }
 
 
-    public void setup() {
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-        toolbar.setNavigationIcon(getResources().getDrawable(R.drawable.ic_left_arrow));
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ReturnScreen();
-            }
-        });
 
-        DATA_LIST_KEY  = getApplicationContext().getResources().getString(R.string.saved_data_list);
-        TOKEN_KEY  = getApplicationContext().getResources().getString(R.string.saved_token);
-    }
 
     @Override
     protected void onDestroy() {

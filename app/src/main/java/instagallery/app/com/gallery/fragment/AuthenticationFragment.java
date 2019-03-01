@@ -60,7 +60,6 @@ public class AuthenticationFragment extends Fragment implements AuthenticationLi
 
         // Initialize presenter
         instagramPresenter = new InstagramRequestPresenter(this);
-
         // Observer Token request interaction
         instagramPresenter.getInstaInteractor().getAccessTokenChange().subscribe(new Observer<AccessToken>() {
             @Override
@@ -95,9 +94,7 @@ public class AuthenticationFragment extends Fragment implements AuthenticationLi
         lottie.playAnimation();
         lottie.addAnimatorListener(this);
 
-
         login_button.setVisibility(View.INVISIBLE);
-
 
         // button login, start authentication process
         Subscription buttonSub = RxView.clicks(login_button).subscribe(new Action1<Void>() {
